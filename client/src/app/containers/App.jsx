@@ -8,6 +8,7 @@ import {
 import * as PAGES from 'constants/pages';
 import '../styles/App.css';
 import SideBar from "components/SideBar/SideBar";
+import FAQ from "pages/FAQ";
 
 
 const HomePage = () => {
@@ -34,7 +35,7 @@ const App = () => {
                     <Route path={`/${PAGES.USER_INFO}`} element={<h1>USER_INFO</h1>} />
                     <Route path={`/${PAGES.CHAT}`} element={<h1>CHAT</h1>} />
                     <Route path={`/${PAGES.TRACK}`} element={<h1>TRACK</h1>} />
-                    <Route path={`/${PAGES.FAQ}`} element={<h1>FAQ</h1>} />
+                    <Route path={`/${PAGES.FAQ}`} element={<FAQ />} />
                 </Routes>
             </Router>
         </div>
