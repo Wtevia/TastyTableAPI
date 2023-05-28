@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import { useDispatch } from 'react-redux';
 import {
     BrowserRouter as Router,
     Routes,
@@ -9,7 +10,10 @@ import * as PAGES from 'constants/pages';
 import '../styles/App.css';
 import SideBar from "components/SideBar/SideBar";
 import FAQ from "pages/FAQ";
-
+import Login from 'pages/Login';
+import {
+    fetchUser,
+} from '../actions/user';
 
 const HomePage = () => {
     const navigate = useNavigate();
@@ -22,21 +26,35 @@ const HomePage = () => {
 };
 
 const App = () => {
-
+    const [state, setState] = useState({
+        componentDidMount: false,
+    });
+    const dispatch = useDispatch();
+    
+    useEffect(() => {
+        dispatch(fetchUser());
+        setState(prevState => ({
+          ...prevState,
+          componentDidMount: true,
+        }));
+    }, []);
     return (
         <div className="App">
             <Router>
                 <SideBar />
                 {/* SIdebar */}
-                <Routes>
-                    <Route path="*" element={<HomePage />} />
-                    <Route path={`/${PAGES.PRODUCTS}`} element={<h1>PRODUCTS</h1>} />
-                    <Route path={`/${PAGES.LOGIN}`} element={<h1>LOGIN</h1>} />
-                    <Route path={`/${PAGES.USER_INFO}`} element={<h1>USER_INFO</h1>} />
-                    <Route path={`/${PAGES.CHAT}`} element={<h1>CHAT</h1>} />
-                    <Route path={`/${PAGES.TRACK}`} element={<h1>TRACK</h1>} />
-                    <Route path={`/${PAGES.FAQ}`} element={<FAQ />} />
-                </Routes>
+                {state.componentDidMount && (
+                    <Routes>
+                        <Route path="*" element={<HomePage />} />
+                        <Route path={`/${PAGES.PRODUCTS}`} element={<h1>PRODUCTS</h1>} />
+                        <Route path={`/${PAGES.LOGIN}`} element={<Login />} />
+                        <Route path={`/${PAGES.USER_INFO}`} element={<h1>USER_INFO</h1>} />
+                        <Route path={`/${PAGES.CHAT}`} element={<h1>CHAT</h1>} />
+                        <Route path={`/${PAGES.TRACK}`} element={<h1>TRACK</h1>} />
+                        <Route path={`/${PAGES.FAQ}`} element={<FAQ />} />
+                    </Routes>
+                )}
+                
             </Router>
         </div>
     );
