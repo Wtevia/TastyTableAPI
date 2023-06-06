@@ -16,7 +16,7 @@ public class User : BaseEntity
 
     public string Address { get; set; }
 
-    public UserRole UserRole { get; set; }
+    public UserRole UserRole { get; set; } = UserRole.Customer;
 
     public virtual List<Order> Orders { get; } = new();
 
