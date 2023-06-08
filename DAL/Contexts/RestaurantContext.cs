@@ -20,7 +20,7 @@ namespace DAL.Contexts
         public RestaurantContext(DbContextOptions<RestaurantContext> options)
         : base(options)
         {
-            Database.EnsureDeleted();
+            // Database.EnsureDeleted();
             Database.EnsureCreated();
         }
 
@@ -42,7 +42,6 @@ namespace DAL.Contexts
 
             modelBuilder.Entity<ExternalAuth>()
                 .HasAlternateKey(ea => ea.Key);
-            
         }
     }
 }

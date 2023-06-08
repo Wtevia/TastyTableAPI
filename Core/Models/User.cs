@@ -10,7 +10,7 @@ public class User : BaseEntity
 
     public string? Phone { get; set; }
 
-    public string Password { get; set; }
+    public string? PasswordHash { get; set; }
 
     public DateTime DateOfBirth { get; set; }
 

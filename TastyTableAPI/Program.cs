@@ -1,3 +1,6 @@
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,20 +12,49 @@ var configuration = builder.Configuration
     .AddEnvironmentVariables()
     .Build();
 
-builder.Services.AddScoped<Core.AppSettings>(builder => 
+builder.Services.AddSingleton<Core.AppSettings>(provider => 
     configuration.GetSection("AppSettings").Get<Core.AppSettings>() 
     ?? throw new InvalidOperationException());
 
 builder.Services.AddControllers();
+
+builder.Services.AddAuthentication(x =>  
+    {  
+        x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;  
+        x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(x =>  
+    {  
+        x.RequireHttpsMetadata = false;  
+        x.SaveToken = true;
+        x.TokenValidationParameters = new TokenValidationParameters  
+        {  
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],  
+            ValidAudience = builder.Configuration["Jwt:Audience"],  
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),  
+            ValidateIssuer = true,  
+            ValidateAudience = true,  
+            ValidateIssuerSigningKey = true,  
+            ValidateLifetime = true,  
+            ClockSkew = TimeSpan.Zero,  
+        };  
+    })
+    .AddGoogle(options =>
+    {
+        options.ClientId = configuration.GetSection("GoogleAuth")["ClientId"]!;
+        options.ClientSecret = configuration.GetSection("GoogleAuth")["ClientSecret"]!;
+    });
+builder.Services.AddAuthorization();
+
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-BLL.DependencyRegistrar.ConfigureServices(builder.Services);
 
 builder.Services.AddSwaggerGen(c =>
 {
     c.AddSecurityDefinition("Bearer", securityScheme: new OpenApiSecurityScheme
     {
         Name = "Authorization",
-        Description = "Enter the Bearer Authorization string as following: `Bearer Generated-JWT-Token`",
+        Description = "Enter the Bearer Authorization string",
         In = ParameterLocation.Header,
         Type = SecuritySchemeType.Http,
         Scheme = "Bearer"
@@ -45,32 +77,24 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-Console.WriteLine(configuration.GetSection("GoogleAuth")["ClientId"]);
-builder.Services.AddAuthentication("Bearer")
-    .AddJwtBearer()//(options => { })
-    .AddGoogle(options =>
-    {
-        options.ClientId = configuration.GetSection("GoogleAuth")["ClientId"]!;
-        options.ClientSecret = configuration.GetSection("GoogleAuth")["ClientSecret"]!;
-    });
-builder.Services.AddAuthorization(options =>
-{
-    
-});
+BLL.DependencyRegistrar.ConfigureServices(builder.Services);
 
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
+    app.UseDeveloperExceptionPage();
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
-
-app.UseAuthentication();
-app.UseAuthorization();
-
+app.UseHttpsRedirection();  
+  
+app.UseRouting();  
+  
+app.UseAuthentication();  
+app.UseAuthorization();  
+  
 app.MapControllers();
 
 app.Run();

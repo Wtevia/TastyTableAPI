@@ -8,7 +8,9 @@ namespace BLL
     {
         public static void ConfigureServices(IServiceCollection services)
         {
+            services.AddTransient<IAuthService, AuthService>();
             services.AddTransient<IUserService, UserService>();
+            
             DAL.DependencyRegistrar.ConfigureServices(services);
         }
     }
