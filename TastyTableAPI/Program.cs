@@ -1,5 +1,9 @@
 using System.Text;
+using Core.Models;
+using DAL.Contexts;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
@@ -8,7 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration
     .SetBasePath(Directory.GetCurrentDirectory())
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
+    // .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
     .AddEnvironmentVariables()
     .Build();
 
@@ -19,7 +23,7 @@ builder.Services.AddSingleton<Core.AppSettings>(provider =>
 builder.Services.AddControllers();
 
 builder.Services.AddAuthentication(x =>  
-    {  
+    {
         x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;  
         x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
     })
@@ -43,6 +47,8 @@ builder.Services.AddAuthentication(x =>
     {
         options.ClientId = configuration.GetSection("GoogleAuth")["ClientId"]!;
         options.ClientSecret = configuration.GetSection("GoogleAuth")["ClientSecret"]!;
+        options.SaveTokens = true;
+        //options.CallbackPath = "/api/Auth/signinGoogle";
     });
 builder.Services.AddAuthorization();
 
@@ -78,20 +84,27 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 BLL.DependencyRegistrar.ConfigureServices(builder.Services);
+// builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+//     .AddEntityFrameworkStores<RestaurantContext>()
+//     .AddDefaultTokenProviders();
 
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
-    app.UseSwagger();
-    app.UseSwaggerUI();
 }
+app.UseSwagger();
+app.UseSwaggerUI();
 
-app.UseHttpsRedirection();  
-  
-app.UseRouting();  
-  
+app.UseHttpsRedirection();
+
+// app.UseDefaultFiles();
+// app.UseStaticFiles();
+
+app.UseRouting();
+app.UseCors();
+
 app.UseAuthentication();  
 app.UseAuthorization();  
   
