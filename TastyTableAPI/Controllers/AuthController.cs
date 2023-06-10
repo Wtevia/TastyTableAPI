@@ -2,6 +2,7 @@
 using BLL.Interfaces;
 using Core.CredentialModels;
 using Core.Models;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -92,8 +93,13 @@ public class AuthController : ControllerBase
     
     [HttpPost("signinGoogle", Name = "SignInGoogle")]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [Authorize(AuthenticationSchemes = GoogleDefaults.AuthenticationScheme)]
     public ActionResult SignInGoogle()
     {
+        Console.WriteLine("CLAIMS:");
+        foreach (var v in User.Claims)
+            Console.Write(v.Type + " " + v.Value + ", ");
+        Console.WriteLine();
         // var user = _authService.LogIn(logInModel);
         //
         // if (user == null)

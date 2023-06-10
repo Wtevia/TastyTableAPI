@@ -83,6 +83,8 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+builder.Services.AddCors();
+
 BLL.DependencyRegistrar.ConfigureServices(builder.Services);
 // builder.Services.AddIdentity<IdentityUser, IdentityRole>()
 //     .AddEntityFrameworkStores<RestaurantContext>()
@@ -98,9 +100,6 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
-
-// app.UseDefaultFiles();
-// app.UseStaticFiles();
 
 app.UseRouting();
 app.UseCors();
