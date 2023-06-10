@@ -1,4 +1,5 @@
-﻿using BLL.Interfaces;
+﻿using System.Security.Claims;
+using BLL.Interfaces;
 using Core.CredentialModels;
 using Core.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -69,6 +70,48 @@ public class AuthController : ControllerBase
     [HttpGet("test")]
     public IActionResult Test()
     {
-        return Ok(new {message="Success"});
+        Console.WriteLine("CLAIMS:");
+        foreach (var v in User.Claims)
+            Console.Write(v.Type + " " + v.Value + ", ");
+        Console.WriteLine();
+        
+        return Ok(new {message="Success Auth", 
+            Id=this.User.FindFirstValue(ClaimTypes.NameIdentifier)});
+    }
+    
+    [HttpGet("testNoAuth")]
+    public IActionResult TestNotAuth()
+    {
+        Console.WriteLine("CLAIMS:");
+        foreach (var v in User.Claims)
+            Console.Write(v.Type + " " + v.Value + ", ");
+        Console.WriteLine();
+        
+        return Ok(new {message="Success No Auth"});
+    }
+    
+    [HttpPost("signinGoogle", Name = "SignInGoogle")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public ActionResult SignInGoogle()
+    {
+        // var user = _authService.LogIn(logInModel);
+        //
+        // if (user == null)
+        // {
+        //     return NotFound("We didn't find such user");
+        // }
+        //
+        // var jwtTokens = _authService.GenerateJwtTokens(user);
+        //
+        // var response = new
+        // {
+        //     access_token = jwtTokens.AccessToken,
+        //     userId = user.Id,
+        //     userEmail = user.Email
+        // };
+        //
+        // return Ok(response);
+
+        return Ok();
     }
 }
