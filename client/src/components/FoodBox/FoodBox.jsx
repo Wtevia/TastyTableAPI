@@ -17,7 +17,7 @@ const notify = () => {
 }
 
 
-function FoodBox({ imgSrc, title, price }) {
+function FoodBox({ imgSrc, title, price, description }) {
 
   // const handleClick = async () => {
   //   alert("Item has been added to cart");
@@ -32,6 +32,9 @@ function FoodBox({ imgSrc, title, price }) {
 
       <div className="food-details">
         <div>
+          <p>
+            Description: {description}
+          </p>
           <p>
             Price: {price}
           </p>
