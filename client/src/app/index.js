@@ -5,9 +5,11 @@ import thunkMiddleware from 'redux-thunk';
 
 import App from './containers/App.jsx';
 import userReducer from './reducers/user';
+import topicsReducer from 'pages/Products/reducers';
 
 const rootReducer = combineReducers({
   user: userReducer,
+  topics: topicsReducer,
 });
 
 const store = createStore(

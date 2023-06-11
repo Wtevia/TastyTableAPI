@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import card from "./img/card1.png";
 import afri from "./img/afri.jpg";
@@ -7,11 +7,29 @@ import ital from "./img/ital.jpg";
 import FoodBox from 'components/FoodBox';
 import PaymentSect from "components/PaymentSect";
 import './foodcont.css';
+import { useDispatch, useSelector } from "react-redux";
+import Actions from 'pages/Products/actions/topics';
 
 
 const FoodCont = ({
     children,
 }) => {
+    const dispatch = useDispatch();
+    const {
+        list,
+        isLoading,
+        isError,
+    } = useSelector(({topics}) => topics.reducer);
+
+    useEffect(() => {
+        dispatch(Actions.receiveTopics());
+        console.log({
+            list,
+            isLoading,
+            isError,
+        });
+    }, [])
+
     return (
         <>
             <div className="foodcontainer">
@@ -22,18 +40,20 @@ const FoodCont = ({
                                 <Link to="/" className="var-btn">
                                     All
                                 </Link>
-                                <Link to="/african" className="var-btn">
-                                    African
-                                </Link>
-                                <Link to="/chinese" className="var-btn">
-                                    Chinese
-                                </Link>
-                                <Link to="/italian" className="var-btn">
-                                    Italian
-                                </Link>
-                                <Link to="/desert" className="var-btn">
-                                    Desert
-                                </Link>
+                                {
+                                    isLoading && (
+                                        <span>Loading...</span>
+                                    )
+                                }
+                                {
+                                    !isLoading &&
+                                    list.map(topic => (
+                                        <Link to={`/${topic}`} className="var-btn">
+                                            {topic}
+                                        </Link>
+                                    ))
+                                }
+                                
                             </div>
                         </div>
 

@@ -1,0 +1,4 @@
+// Topics
+export const REQUEST_TOPICS = 'REQUEST_TOPICS';
+export const RECEIVE_TOPICS = 'RECEIVE_TOPICS';
+export const ERROR_RECEIVE_TOPICS = 'ERROR_RECEIVE_TOPICS';
