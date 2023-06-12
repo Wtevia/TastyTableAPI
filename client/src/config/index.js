@@ -4,4 +4,7 @@ export default {
     USERS_SERVICE: '',
     TOPICS_SERVICE: '/topics',
     PRODUCTS_SERVICE: '/products',
+    CART_SERVICE: '/cart',
+    ADD_SERVICE: '/add',
+    REMOVE_SERVICE: '/delete',
 }

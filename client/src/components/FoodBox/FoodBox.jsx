@@ -1,24 +1,30 @@
 import React from "react";
+import { useDispatch } from "react-redux";
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ActionOrder from 'pages/Products/actions/cart';
 
-const notify = () => {
-  toast.success('Item has been added to cart', {
-    position: "top-center",
-    autoClose: 3000,
-    hideProgressBar: false,
-    closeOnClick: true,
-    pauseOnHover: true,
-    draggable: true,
-    progress: undefined,
-    theme: "light",
-    });
-}
+
 
 
 function FoodBox({ imgSrc, title, price, description }) {
-
+  const dispatch = useDispatch();
+  
+  const notify = (product) => {
+    dispatch(ActionOrder.addProductCart({product}));
+    // console.log(product);
+    toast.success('Item has been added to cart', {
+      position: "top-center",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      });
+  }
   // const handleClick = async () => {
   //   alert("Item has been added to cart");
   // };
@@ -46,7 +52,7 @@ function FoodBox({ imgSrc, title, price, description }) {
         {/* <button onClick={handleClick} className="btn">
           Add to cart
         </button> */}
-        <button onClick={notify} className="btn">Add to cart</button>
+        <button onClick={() => notify({name: title, price})} className="btn">Add to cart</button>
       </div>
       <ToastContainer />
     </div>

@@ -57,3 +57,7 @@ header {
       min-width: 70px;
     }
   }
+
+  .logo {
+    border-radius: 10px;
+  }

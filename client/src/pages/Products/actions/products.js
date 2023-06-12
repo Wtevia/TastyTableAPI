@@ -24,6 +24,7 @@ const getProducts = ({ url }) => {
                 return {
                     products: [
                         {
+                            id: 1,
                             name: 'Pinecakes',
                             description: 'Created in England during the 1700s, original recipes called for one pound each of flour, sugar, butter, and eggs.',
                             price: 20,
@@ -31,6 +32,7 @@ const getProducts = ({ url }) => {
                             image: '/images/chine.jpg',
                         },
                         {
+                            id: 2,
                             name: 'Soup',
                             description: 'A liquid dish, typically savoury and made by boiling meat, fish, or vegetables etc. in stock or water.',
                             price: 15,
@@ -38,6 +40,7 @@ const getProducts = ({ url }) => {
                             image: '/images/ital.jpg',
                         },
                         {
+                            id: 3,
                             name: 'Water',
                             description: 'Sparkling water',
                             price: 5,

@@ -48,7 +48,7 @@ const App = () => {
                 {/* SIdebar */}
                 {state.componentDidMount && (
                     <Routes>
-                        {/* <Route path="*" element={<HomePage />} /> */}
+                        <Route path="*" element={<HomePage />} />
                         <Route path={`/${PAGES.PRODUCTS}`} element={<Products />} />
                         <Route path={`/${PAGES.LOGIN}`} element={<LoginProvider />} />
                         <Route path={`/${PAGES.USER_INFO}`} element={<h1>USER_INFO</h1>} />
