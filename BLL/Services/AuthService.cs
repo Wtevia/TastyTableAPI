@@ -210,6 +210,7 @@ public class AuthService : IAuthService
     {
         var authClaims = new List<Claim>
         {
+            new("UserId", user.Id.ToString()),
             new(ClaimTypes.Name, user.UserName),
             new(ClaimTypes.Email, user.Email!)
         };

@@ -13,6 +13,7 @@ namespace TastyTableAPI.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 public class AuthController : ControllerBase
 {
     private readonly ILogger<AuthController> _logger;
@@ -29,6 +30,7 @@ public class AuthController : ControllerBase
         _userManager = userManager;
     }
 
+    [AllowAnonymous]
     [HttpPost("login", Name = "Login")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<JwtTokens>> Login([FromBody]LogInPassword logInPassword)
@@ -45,6 +47,7 @@ public class AuthController : ControllerBase
         return Ok(jwtTokens);
     }
     
+    [AllowAnonymous]
     [HttpPost("register", Name = "Register")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<JwtTokens>> Register([FromBody]RegisterUserModel registerModel)
@@ -57,7 +60,6 @@ public class AuthController : ControllerBase
         return Ok(jwtTokens);
     }
 
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [HttpGet("test")]
     public IActionResult Test()
     {
@@ -70,8 +72,8 @@ public class AuthController : ControllerBase
             Id=this.User.FindFirstValue(ClaimTypes.NameIdentifier)});
     }
     
-    [Authorize(AuthenticationSchemes = GoogleDefaults.AuthenticationScheme)]
     [HttpGet("testGoogle")]
+    [Authorize(AuthenticationSchemes = GoogleDefaults.AuthenticationScheme)]
     public IActionResult TestGoogle()
     {
         Console.WriteLine("CLAIMS: ");
@@ -84,13 +86,9 @@ public class AuthController : ControllerBase
     }
     
     [HttpGet("testNoAuth")]
+    [AllowAnonymous]
     public IActionResult TestNotAuth()
     {
-        Console.WriteLine("CLAIMS: ");
-        foreach (var v in User.Claims)
-            Console.Write(v.Type + " " + v.Value + ", ");
-        Console.WriteLine();
-        
         return Ok(new {message="Success No Auth"});
     }
     
@@ -145,5 +143,15 @@ public class AuthController : ControllerBase
         var jwtTokens = await _authService.GenerateJwtTokens(user);
 
         return Ok(jwtTokens);
+    }
+    
+    [HttpGet("user", Name = "GetAuthedUser")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public async Task<ActionResult<User>> GetAuthedUser()
+    {
+        var user = await _userManager.FindByIdAsync(User.FindFirstValue("UserId"));
+            
+        return Ok(user);
     }
 }
