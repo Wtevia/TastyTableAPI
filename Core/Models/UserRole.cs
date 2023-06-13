@@ -6,8 +6,6 @@ namespace Core.Models;
 
 public class UserRole : IdentityUserRole<int>
 {
-    // [Key]
-    // public new int Id { get; set; } = default!;
     [ForeignKey("UserId")]
     public virtual User User { get; set; }
     

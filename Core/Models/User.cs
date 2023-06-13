@@ -13,8 +13,6 @@ public class User : IdentityUser<int>
     public DateTime? DateOfBirth { get; set; } = null;
 
     public string? Address { get; set; }
-    
-    // public virtual List<Role> Roles { get; set; }
 
     public virtual List<ExternalUserLogin> ExternalUserLogins { get; } = new();
     

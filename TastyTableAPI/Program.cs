@@ -4,15 +4,17 @@ using DAL.Contexts;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using TastyTableAPI;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var configuration = builder.Configuration
     .SetBasePath(Directory.GetCurrentDirectory())
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-    // .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
     .AddEnvironmentVariables()
     .Build();
 
@@ -20,35 +22,34 @@ builder.Services.AddSingleton<Core.AppSettings>(provider =>
     configuration.GetSection("AppSettings").Get<Core.AppSettings>() 
     ?? throw new InvalidOperationException());
 
-builder.Services.AddControllers();
-
-builder.Services.AddAuthentication(x =>  
+builder.Services.AddAuthentication(x =>
     {
-        x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;  
+        x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
         x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
     })
-    .AddJwtBearer(x =>  
-    {  
-        x.RequireHttpsMetadata = false;  
+    .AddJwtBearer(x =>
+    {
+        x.RequireHttpsMetadata = false;
         x.SaveToken = true;
-        x.TokenValidationParameters = new TokenValidationParameters  
-        {  
-            ValidIssuer = builder.Configuration["Jwt:Issuer"],  
-            ValidAudience = builder.Configuration["Jwt:Audience"],  
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),  
-            ValidateIssuer = true,  
-            ValidateAudience = true,  
-            ValidateIssuerSigningKey = true,  
-            ValidateLifetime = true,  
-            ClockSkew = TimeSpan.Zero,  
-        };  
+        x.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateIssuerSigningKey = true,
+            ValidateLifetime = true,
+            ClockSkew = TimeSpan.Zero,
+        };
     })
     .AddGoogle(options =>
     {
+        Console.WriteLine("CALLBACK: " + options.CallbackPath);
         options.ClientId = configuration.GetSection("GoogleAuth")["ClientId"]!;
         options.ClientSecret = configuration.GetSection("GoogleAuth")["ClientSecret"]!;
         options.SaveTokens = true;
-        //options.CallbackPath = "/api/Auth/signinGoogle";
+        options.CallbackPath = "/signin-google";
     });
 builder.Services.AddAuthorization();
 
@@ -83,12 +84,16 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-builder.Services.AddCors();
-
 BLL.DependencyRegistrar.ConfigureServices(builder.Services);
-// builder.Services.AddIdentity<IdentityUser, IdentityRole>()
-//     .AddEntityFrameworkStores<RestaurantContext>()
-//     .AddDefaultTokenProviders();
+
+builder.Services.AddIdentity<User, Role>()
+    .AddRoles<Role>()
+    .AddRoleManager<RoleManager<Role>>()
+    .AddUserStore<UserStore<User, Role, RestaurantContext, int,
+        IdentityUserClaim<int>, UserRole, ExternalUserLogin,
+        IdentityUserToken<int>, IdentityRoleClaim<int>>>()
+    .AddRoleStore<RoleStore<Role, RestaurantContext, int, UserRole, IdentityRoleClaim<int>>>()
+    .AddDefaultTokenProviders();
 
 var app = builder.Build();
 
@@ -100,13 +105,20 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
-
 app.UseRouting();
-app.UseCors();
 
 app.UseAuthentication();  
 app.UseAuthorization();  
   
 app.MapControllers();
+
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+
+    await SeedManager.Seed(services);
+}
+
 
 app.Run();
