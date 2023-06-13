@@ -1,23 +1,21 @@
-﻿using Core.Enums;
+﻿using System.ComponentModel.DataAnnotations;
+using Core.Enums;
+using Microsoft.AspNetCore.Identity;
 
 namespace Core.Models;
 
-public class User : BaseEntity
+public class User : IdentityUser<int>
 {
-    public string Name { get; set; }
+    public User() : base() { }
 
-    public string Email { get; set; }
+    public User(string userName) : base(userName) { }
 
-    public string? Phone { get; set; }
+    public DateTime? DateOfBirth { get; set; } = null;
 
-    public string Password { get; set; }
+    public string? Address { get; set; }
 
-    public DateTime DateOfBirth { get; set; }
-
-    public string Address { get; set; }
-
-    public UserRole UserRole { get; set; } = UserRole.Customer;
-
+    public virtual List<ExternalUserLogin> ExternalUserLogins { get; } = new();
+    
     public virtual List<Order> Orders { get; } = new();
 
     public virtual List<ChatUser> UserChats { get; } = new();

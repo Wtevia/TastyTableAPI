@@ -6,8 +6,8 @@ namespace Core.CredentialModels
     public class RegisterUserModel
     {
         [Required]
-        [StringLength(20, MinimumLength = 2, ErrorMessage = "Name's length must be greater or equal to2")]
-        public string Name { get; set; }
+        [StringLength(20, MinimumLength = 2, ErrorMessage = "UserName's length must be greater or equal to2")]
+        public string UserName { get; set; }
      
         [Required]
         [DataType(DataType.EmailAddress)]
@@ -16,14 +16,14 @@ namespace Core.CredentialModels
         
         [DataType(DataType.PhoneNumber)]
         [Phone]
-        public string Phone { get; set; }
+        public string? Phone { get; set; }
         
         [Required]
         public string Address { get; set; }
         
         [Required]
         [DataType(DataType.Date)]
-        public DateTime DateOfBirth { get; set; }
+        public DateTime? DateOfBirth { get; set; }
 
         [Required]
         [DataType(DataType.Password)]
@@ -32,6 +32,8 @@ namespace Core.CredentialModels
         public string Password { get; set; }
 
         [Required] 
-        public bool IsDeliverer { get; set; } = true;
+        [RegularExpression($"{Consts.UserRoles.Customer}|{Consts.UserRoles.Deliverer}", 
+            ErrorMessage = "Invalid role")]
+        public string Role { get; set; } = Consts.UserRoles.Customer;
     }
 }

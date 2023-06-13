@@ -9,8 +9,10 @@ import {
 import * as PAGES from 'constants/pages';
 import '../styles/App.css';
 import SideBar from "components/SideBar/SideBar";
-import FAQ from "pages/FAQ";
-import Login from 'pages/Login';
+// import FAQ from "pages/FAQ";
+import FAQProvider from 'pageProviders/FAQ';
+// import Login from 'pages/Login';
+import LoginProvider from 'pageProviders/Login';
 import {
     fetchUser,
 } from '../actions/user';
@@ -45,13 +47,13 @@ const App = () => {
                 {/* SIdebar */}
                 {state.componentDidMount && (
                     <Routes>
-                        <Route path="*" element={<HomePage />} />
+                        {/* <Route path="*" element={<HomePage />} /> */}
                         <Route path={`/${PAGES.PRODUCTS}`} element={<h1>PRODUCTS</h1>} />
-                        <Route path={`/${PAGES.LOGIN}`} element={<Login />} />
+                        <Route path={`/${PAGES.LOGIN}`} element={<LoginProvider />} />
                         <Route path={`/${PAGES.USER_INFO}`} element={<h1>USER_INFO</h1>} />
                         <Route path={`/${PAGES.CHAT}`} element={<h1>CHAT</h1>} />
                         <Route path={`/${PAGES.TRACK}`} element={<h1>TRACK</h1>} />
-                        <Route path={`/${PAGES.FAQ}`} element={<FAQ />} />
+                        <Route path={`/${PAGES.FAQ}`} element={<FAQProvider />} />
                     </Routes>
                 )}
                 
