@@ -44,17 +44,17 @@ public class DishController : ControllerBase
     [HttpPost("search")]
     public async Task<ActionResult<List<Dish>>> SearchDishes([FromBody]SearchDishFilters filters)
     {
-        var dishes = _dishService.SearchDishes(filters)
-            .Select(d => new
-            {
-                d.Name,
-                d.Description,
-                d.Price,
-                d.Image,
-                d.IsAvailable,
-                Category = d.Category.ToString(),
-                d.Id
-            });
+        var dishes = _dishService.SearchDishes(filters);
+            // .Select(d => new
+            // {
+            //     d.Name,
+            //     d.Description,
+            //     d.Price,
+            //     d.Image,
+            //     d.IsAvailable,
+            //     Category = d.Category.ToString(),
+            //     d.Id
+            // });
         return Ok(dishes);
     }
 }

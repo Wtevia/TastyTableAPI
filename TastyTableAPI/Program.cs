@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.Json.Serialization;
 using Core.Models;
 using DAL.Contexts;
 using Microsoft.AspNetCore.Authentication.Google;
@@ -53,7 +54,13 @@ builder.Services.AddAuthentication(x =>
     });
 builder.Services.AddAuthorization();
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(
+        options =>
+        {
+            options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+        }
+    );
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(c =>
