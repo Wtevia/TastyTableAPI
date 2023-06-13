@@ -20,7 +20,7 @@ const SideBar = ({
 }) => {
     return(
         <header>
-            <img src={logo} alt="logo" />
+            <img className="logo" src={logo} alt="logo" />
             
             <ul className="top-menu">
                 <Link to={`${PAGES.PRODUCTS}`}><Icon icon={<MdDashboard title="Order"/>} /></Link>
