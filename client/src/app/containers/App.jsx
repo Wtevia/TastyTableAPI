@@ -13,6 +13,7 @@ import SideBar from "components/SideBar/SideBar";
 import FAQProvider from 'pageProviders/FAQ';
 // import Login from 'pages/Login';
 import LoginProvider from 'pageProviders/Login';
+import Products from 'pages/Products';
 import {
     fetchUser,
 } from '../actions/user';
@@ -47,8 +48,8 @@ const App = () => {
                 {/* SIdebar */}
                 {state.componentDidMount && (
                     <Routes>
-                        {/* <Route path="*" element={<HomePage />} /> */}
-                        <Route path={`/${PAGES.PRODUCTS}`} element={<h1>PRODUCTS</h1>} />
+                        <Route path="*" element={<HomePage />} />
+                        <Route path={`/${PAGES.PRODUCTS}`} element={<Products />} />
                         <Route path={`/${PAGES.LOGIN}`} element={<LoginProvider />} />
                         <Route path={`/${PAGES.USER_INFO}`} element={<h1>USER_INFO</h1>} />
                         <Route path={`/${PAGES.CHAT}`} element={<h1>CHAT</h1>} />
