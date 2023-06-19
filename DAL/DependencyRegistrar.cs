@@ -1,7 +1,8 @@
-using System.IO;
+using Core;
 using DAL.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace DAL
 {
@@ -10,7 +11,7 @@ namespace DAL
         public static void ConfigureServices(IServiceCollection services)
         {
             var connectionString = services.BuildServiceProvider()
-                .GetRequiredService<Core.AppSettings>().DefaultConnection;
+                .GetRequiredService<IOptions<AppSettings>>().Value.DefaultConnection;
             
             services.AddDbContext<RestaurantContext>(
                 builder => builder.UseMySql(connectionString , ServerVersion.AutoDetect(connectionString)),

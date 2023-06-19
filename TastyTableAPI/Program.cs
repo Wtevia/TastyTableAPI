@@ -1,5 +1,6 @@
 using System.Text;
 using System.Text.Json.Serialization;
+using Core;
 using Core.Models;
 using DAL.Contexts;
 using Microsoft.AspNetCore.Authentication.Google;
@@ -19,9 +20,7 @@ var configuration = builder.Configuration
     .AddEnvironmentVariables()
     .Build();
 
-builder.Services.AddSingleton<Core.AppSettings>(provider => 
-    configuration.GetSection("AppSettings").Get<Core.AppSettings>() 
-    ?? throw new InvalidOperationException());
+builder.Services.Configure<AppSettings>(configuration.GetSection("AppSettings"));
 
 builder.Services.AddAuthentication(x =>
     {
