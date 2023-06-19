@@ -1,4 +1,3 @@
-using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace Core.CredentialModels
@@ -6,12 +5,12 @@ namespace Core.CredentialModels
     public class RegisterUserModel
     {
         [Required]
-        [StringLength(20, MinimumLength = 2, ErrorMessage = "UserName's length must be greater or equal to2")]
+        [StringLength(128, MinimumLength = Consts.UsernameMinLength, ErrorMessage = Consts.UsernameLengthValidationError)]
         public string UserName { get; set; }
      
         [Required]
         [DataType(DataType.EmailAddress)]
-        [EmailAddress]
+        [EmailAddress(ErrorMessage = Consts.EmailValidationError)]
         public string Email { get; set; }
         
         [DataType(DataType.PhoneNumber)]
@@ -27,8 +26,7 @@ namespace Core.CredentialModels
 
         [Required]
         [DataType(DataType.Password)]
-        [StringLength(20, MinimumLength = 8, ErrorMessage = "Password's length must be greater or equal to 8")]
-        [RegularExpression(@"^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,20}$")]
+        [RegularExpression(Consts.PasswordRegex, ErrorMessage = Consts.PasswordValidationError)]
         public string Password { get; set; }
 
         [Required] 
